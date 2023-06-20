@@ -10,8 +10,11 @@ require (
 	github.com/hashicorp/terraform-plugin-testing v1.2.0
 	github.com/linode/linodego v1.17.0
 	github.com/linode/linodego/k8s v0.0.0-20200831124119-58d5d5bb7947
+	github.com/stretchr/testify v1.7.2
 	golang.org/x/crypto v0.9.0
 )
+
+require github.com/pmezard/go-difflib v1.0.0 // indirect
 
 require (
 	github.com/agext/levenshtein v1.2.2 // indirect
