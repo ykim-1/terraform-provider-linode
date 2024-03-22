@@ -35,7 +35,6 @@ type (
 )
 
 var (
-	optInTests               map[string]struct{}
 	privateKeyMaterial       string
 	PublicKeyMaterial        string
 	TestAccProviders         map[string]*schema.Provider
@@ -116,14 +115,6 @@ func init() {
 	initTestImages()
 }
 
-func TestProvider(t *testing.T) {
-	t.Parallel()
-
-	if err := linode.Provider().InternalValidate(); err != nil {
-		t.Fatalf("err: %s", err)
-	}
-}
-
 func PreCheck(t *testing.T) {
 	t.Helper()
 
@@ -141,7 +132,7 @@ func GetSSHClient(t *testing.T, user, addr string) (client *ssh.Client) {
 	}
 
 	config := &ssh.ClientConfig{
-		User: "root",
+		User: user,
 		Auth: []ssh.AuthMethod{ssh.PublicKeys(signer)},
 		// #nosec G106 -- Test data, not used in production
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
