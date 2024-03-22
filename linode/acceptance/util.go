@@ -28,15 +28,6 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-const (
-	optInTestsEnvVar         = "ACC_OPT_IN_TESTS"
-	SkipInstanceReadyPollKey = "skip_instance_ready_poll"
-
-	runLongTestsEnvVar  = "RUN_LONG_TEST"
-	skipLongTestMessage = "This test has been marked as a long-running test and is skipped by default. " +
-		"If you would like to run this test, please set the RUN_LONG_TEST environment variable to true."
-)
-
 type (
 	AttrValidateFunc     func(val string) error
 	ListAttrValidateFunc func(resourceName, path string, state *terraform.State) error
@@ -54,19 +45,6 @@ var (
 	TestImageLatest          string
 	TestImagePrevious        string
 )
-
-func initOptInTests() {
-	optInTests = make(map[string]struct{})
-
-	optInTestsValue, ok := os.LookupEnv(optInTestsEnvVar)
-	if !ok {
-		return
-	}
-
-	for _, testName := range strings.Split(optInTestsValue, ",") {
-		optInTests[testName] = struct{}{}
-	}
-}
 
 // initTestImages grabs the latest Linode Alpine images for acceptance test configurations
 func initTestImages() {
@@ -103,8 +81,6 @@ func init() {
 	if err != nil {
 		log.Fatalf("Failed to generate random SSH key pair for testing: %s", err)
 	}
-
-	initOptInTests()
 
 	TestAccProvider = linode.Provider()
 	TestAccFrameworkProvider = linode.CreateFrameworkProvider(version.ProviderVersion).(*linode.FrameworkProvider)
@@ -153,32 +129,6 @@ func PreCheck(t *testing.T) {
 
 	if v := os.Getenv("LINODE_TOKEN"); v == "" {
 		t.Fatal("LINODE_TOKEN must be set for acceptance tests")
-	}
-}
-
-func OptInTest(t *testing.T) {
-	t.Helper()
-
-	if _, ok := optInTests[t.Name()]; !ok {
-		t.Skipf("skipping opt-in test; specify test in environment variable %q to run", optInTestsEnvVar)
-	}
-}
-
-func LongRunningTest(t *testing.T) {
-	t.Helper()
-
-	shouldRunStr := os.Getenv(runLongTestsEnvVar)
-	if len(shouldRunStr) == 0 {
-		t.Skip(skipLongTestMessage)
-	}
-
-	shouldRun, err := strconv.ParseBool(shouldRunStr)
-	if err != nil {
-		t.Fatalf("failed to parse %s as bool: %s", runLongTestsEnvVar, err)
-	}
-
-	if !shouldRun {
-		t.Skip(skipLongTestMessage)
 	}
 }
 

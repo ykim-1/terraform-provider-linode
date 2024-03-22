@@ -1,4 +1,4 @@
-//go:build integration
+//go:build (integration && long_running) || databasemysql
 
 package databasemysql_test
 
@@ -98,8 +98,6 @@ func TestResourceDatabaseMySQL_expandFlatten(t *testing.T) {
 }
 
 func TestAccResourceDatabaseMySQL_basic(t *testing.T) {
-	acceptance.LongRunningTest(t)
-
 	t.Parallel()
 
 	resName := "linode_database_mysql.foobar"
@@ -147,7 +145,6 @@ func TestAccResourceDatabaseMySQL_basic(t *testing.T) {
 }
 
 func TestAccResourceDatabaseMySQL_complex(t *testing.T) {
-	acceptance.LongRunningTest(t)
 	t.Parallel()
 
 	resName := "linode_database_mysql.foobar"
