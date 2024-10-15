@@ -147,12 +147,8 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Create virtual environment
-        run: python -m venv venv
-
-      - name: Activate virtual environment and install Linode CLI
+      - name: Install Linode CLI
         run: |
-          source venv/bin/activate
           pip install linode-cli
 
       - name: Create Firewall and Attach to Instances
