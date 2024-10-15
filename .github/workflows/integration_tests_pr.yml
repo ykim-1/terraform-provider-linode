@@ -153,7 +153,6 @@ jobs:
 
       - name: Create Firewall and Attach to Instances
         run: |
-          source venv/bin/activate
           FIREWALL_ID=$(linode-cli firewalls create --label "e2e-fw-$(date +%s)" --rules.inbound_policy "DROP" --rules.outbound_policy "ACCEPT" --text --format=id --no-headers)
           echo "Created Firewall with ID: $FIREWALL_ID"
           
